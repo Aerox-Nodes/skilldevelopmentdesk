@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skilled Development Desk</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+
+    .glass { background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); }
+
+    .nav-link { position: relative; transition: all .25s; cursor: pointer; }
+    .nav-link::after { content:''; position:absolute; width:0; height:3px; bottom:-1px; left:0; background:#3b82f6; border-radius:2px 2px 0 0; transition:width .25s ease; }
+    .nav-link:hover::after, .nav-link.active::after { width:100%; }
+    .nav-link.active { color:#2563eb; }
+
+    .card { transition: transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s; }
+    .card:hover { transform:translateY(-5px); box-shadow:0 20px 40px -10px rgba(0,0,0,.12); }
+
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* AI Panel */
+    #aiPanel { transition: right .35s cubic-bezier(.4,0,.2,1); }
+
+    /* Modal */
+    #askModal { transition: opacity .2s; }
+
+    /* Toast */
+    #toast { transition: opacity .3s, transform .3s; }
+
+    /* Vote button active */
+    .voted { color:#2563eb !important; }
+
+    /* Scrollbar slim */
+    ::-webkit-scrollbar { width:5px; height:5px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:#d1d5db; border-radius:10px; }
+
+    /* Chat bubble */
+    .bubble-ai { background:#f1f5ff; border-radius:18px 18px 18px 4px; }
+    .bubble-user { background:#2563eb; color:#fff; border-radius:18px 18px 4px 18px; }
+
+    .typing span { display:inline-block; width:7px; height:7px; background:#9ca3af; border-radius:50%; margin:0 2px; animation:bounce 1.2s infinite; }
+    .typing span:nth-child(2) { animation-delay:.2s; }
+    .typing span:nth-child(3) { animation-delay:.4s; }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-7px)} }
+
+    .tag { display:inline-block; padding:4px 12px; border-radius:999px; font-size:.75rem; font-weight:500; cursor:pointer; transition: background .2s; }
+    .tag:hover { opacity:.85; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+
+<header class="glass border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
+
+        <a href="#" class="flex items-center gap-2 shrink-0">
+      <div class="w-9 h-9 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow">S</div>
+      <span class="text-xl font-extrabold tracking-tight hidden sm:block">Skilled<span class="text-blue-600">Desk</span></span>
+    </a>
+
+        <div class="flex-1 relative max-w-xl">
+      <input id="searchInput" type="text"
+        class="w-full bg-gray-100 border border-transparent focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 rounded-2xl py-2.5 pl-10 pr-4 text-sm outline-none transition-all"
+        placeholder="Search skills, courses, discussions…" />
+      <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+            <div id="searchDropdown" class="hidden absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 text-sm"></div>
+    </div>
+
+        <div class="flex items-center gap-2 ml-auto shrink-0">
+            <button onclick="toggleAIPanel()"
+        class="flex items-center gap-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2.5 rounded-2xl text-sm font-semibold hover:scale-105 transition-all shadow-md">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span class="hidden sm:inline">AI Assistant</span>
+      </button>
+
+            <div class="relative">
+        <button id="askBtn" onclick="toggleAskDropdown()"
+          class="flex items-center gap-1.5 border border-gray-300 hover:border-gray-400 bg-white px-4 py-2.5 rounded-2xl text-sm font-medium transition-all">
+          <i class="fa-solid fa-plus"></i>
+          <span class="hidden sm:inline">Ask</span>
+        </button>
+        <div id="askDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-1.5 z-50">
+          <button onclick="openAskModal('public')" class="flex items-center gap-3 w-full px-5 py-3 hover:bg-gray-50 text-left">
+            <i class="fa-solid fa-globe text-blue-500 w-4"></i>
+            <div>
+              <div class="font-medium text-sm">Ask Publicly</div>
+              <div class="text-xs text-gray-400">Visible to the community</div>
+            </div>
+          </button>
+          <button onclick="openAskModal('anonymous')" class="flex items-center gap-3 w-full px-5 py-3 hover:bg-gray-50 text-left">
+            <i class="fa-solid fa-user-secret text-purple-500 w-4"></i>
+            <div>
+              <div class="font-medium text-sm">Ask Anonymously</div>
+              <div class="text-xs text-gray-400">Identity hidden</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+            <div class="relative">
+        <div onclick="toggleProfileMenu()"
+          class="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold cursor-pointer hover:ring-4 hover:ring-blue-100 transition-all select-none">
+          A
+        </div>
+        <div id="profileMenu" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-1.5 z-50 text-sm">
+          <div class="px-4 py-3 border-b border-gray-100">
+            <div class="font-semibold">Ayaan Rahman</div>
+            <div class="text-xs text-gray-400">ayaan@example.com</div>
+          </div>
+          <a href="#" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50"><i class="fa-solid fa-user w-4 text-gray-400"></i> Profile</a>
+          <a href="#" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50"><i class="fa-solid fa-bookmark w-4 text-gray-400"></i> Saved</a>
+          <a href="#" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50"><i class="fa-solid fa-gear w-4 text-gray-400"></i> Settings</a>
+          <div class="border-t border-gray-100 mt-1"></div>
+          <a href="#" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-red-500"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Sign out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 border-t border-gray-100">
+    <ul class="flex items-center gap-6 text-sm font-medium">
+      <li data-tab="community" onclick="switchTab(this)" class="nav-link active text-blue-600 py-4">Community</li>
+      <li data-tab="schools"   onclick="switchTab(this)" class="nav-link text-gray-500 hover:text-gray-800 py-4">Schools</li>
+      <li data-tab="skills"    onclick="switchTab(this)" class="nav-link text-gray-500 hover:text-gray-800 py-4">Skills</li>
+      <li data-tab="jobs"      onclick="switchTab(this)" class="nav-link text-gray-500 hover:text-gray-800 py-4">Jobs</li>
+    </ul>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+    <div class="mb-8">
+    <h1 class="text-3xl font-extrabold tracking-tight">Welcome back, Ayaan 👋</h1>
+    <p class="text-gray-500 mt-1">Connect, learn, and grow with fellow developers.</p>
+  </div>
+
+    <div id="tab-community" class="tab-panel active">
+
+        <section class="mb-10">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-xl font-semibold">Featured</h2>
+        <button class="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">View all <i class="fa-solid fa-arrow-right text-xs"></i></button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="card bg-white rounded-3xl overflow-hidden border border-gray-100 cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-5xl">🧠</div>
+          <div class="p-5">
+            <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Discussion</span>
+            <h3 class="font-semibold mt-1">Front-End Architecture</h3>
+            <p class="text-gray-500 text-sm mt-2">What's the best approach to state management in modern web apps?</p>
+            <div class="mt-4 flex items-center gap-3 text-xs text-gray-400">
+              <span><i class="fa-regular fa-comment mr-1"></i>24 replies</span>
+              <span><i class="fa-solid fa-arrow-up mr-1"></i>137 votes</span>
+            </div>
+          </div>
+        </div>
+        <div class="card bg-white rounded-3xl overflow-hidden border border-gray-100 cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-5xl">🐍</div>
+          <div class="p-5">
+            <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Course</span>
+            <h3 class="font-semibold mt-1">Advanced Python</h3>
+            <p class="text-gray-500 text-sm mt-2">New syllabus just uploaded — async, decorators, metaclasses & more.</p>
+            <div class="mt-4 flex items-center gap-3 text-xs text-gray-400">
+              <span><i class="fa-solid fa-user-group mr-1"></i>1.2k enrolled</span>
+              <span><i class="fa-solid fa-star mr-1 text-amber-400"></i>4.8</span>
+            </div>
+          </div>
+        </div>
+        <div class="card bg-white rounded-3xl overflow-hidden border border-gray-100 cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-5xl">⚡</div>
+          <div class="p-5">
+            <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Skill Challenge</span>
+            <h3 class="font-semibold mt-1">Modern Web Dev Sprint</h3>
+            <p class="text-gray-500 text-sm mt-2">7-day challenge: build a full-stack app and earn a badge.</p>
+            <div class="mt-4 flex items-center gap-3 text-xs text-gray-400">
+              <span><i class="fa-solid fa-fire mr-1 text-orange-400"></i>348 active</span>
+              <span class="text-green-500 font-medium">Open</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="lg:col-span-2 space-y-5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold flex items-center gap-2"><i class="fa-solid fa-comments text-blue-500"></i> Recent Discussions</h2>
+          <div class="flex gap-2 text-sm">
+            <button onclick="filterDiscussions('all')" id="filter-all" class="filter-btn px-3 py-1.5 rounded-xl font-medium bg-blue-600 text-white text-xs">All</button>
+            <button onclick="filterDiscussions('question')" id="filter-question" class="filter-btn px-3 py-1.5 rounded-xl font-medium bg-gray-100 text-gray-600 text-xs hover:bg-gray-200">Questions</button>
+            <button onclick="filterDiscussions('tutorial')" id="filter-tutorial" class="filter-btn px-3 py-1.5 rounded-xl font-medium bg-gray-100 text-gray-600 text-xs hover:bg-gray-200">Tutorials</button>
+          </div>
+        </div>
+
+        <div id="discussionFeed" class="space-y-4"></div>
+
+        <button onclick="loadMoreDiscussions()" class="w-full py-3 border border-gray-200 rounded-2xl text-sm text-gray-500 hover:bg-gray-100 transition-colors font-medium">
+          Load more
+        </button>
+      </div>
+
+            <div class="space-y-6">
+
+                <div class="bg-white rounded-3xl border border-gray-100 p-5">
+          <h3 class="font-semibold mb-4 text-sm">Popular Skills</h3>
+          <div id="skillTags" class="flex flex-wrap gap-2"></div>
+        </div>
+
+                <div class="bg-white rounded-3xl border border-gray-100 p-5">
+          <h3 class="font-semibold mb-4 text-sm">Top Contributors</h3>
+          <div id="leaderboard" class="space-y-3"></div>
+        </div>
+
+                <div class="bg-white rounded-3xl border border-gray-100 p-5">
+          <h3 class="font-semibold mb-3 text-sm">Quick Start</h3>
+          <div class="space-y-1 text-sm">
+            <button onclick="switchTabByName('schools')" class="flex items-center gap-3 w-full p-2.5 hover:bg-gray-50 rounded-xl transition-colors text-left">
+              <i class="fa-solid fa-book text-blue-500 w-4"></i> Browse all courses
+            </button>
+            <button class="flex items-center gap-3 w-full p-2.5 hover:bg-gray-50 rounded-xl transition-colors text-left">
+              <i class="fa-solid fa-users text-emerald-500 w-4"></i> Join a study group
+            </button>
+            <button onclick="switchTabByName('skills')" class="flex items-center gap-3 w-full p-2.5 hover:bg-gray-50 rounded-xl transition-colors text-left">
+              <i class="fa-solid fa-trophy text-amber-500 w-4"></i> Explore skill challenges
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+    <div id="tab-schools" class="tab-panel">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Browse Courses</h2>
+      <div class="flex gap-2">
+        <select id="courseFilter" onchange="renderCourses()" class="border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white outline-none focus:border-blue-400">
+          <option value="all">All Categories</option>
+          <option value="web">Web Dev</option>
+          <option value="data">Data & AI</option>
+          <option value="mobile">Mobile</option>
+          <option value="devops">DevOps</option>
+        </select>
+      </div>
+    </div>
+    <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+  </div>
+
+    <div id="tab-skills" class="tab-panel">
+    <h2 class="text-xl font-semibold mb-6">Skill Challenges</h2>
+    <div id="skillsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+  </div>
+
+    <div id="tab-jobs" class="tab-panel">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Job Board</h2>
+      <input id="jobSearch" oninput="renderJobs()" type="text" placeholder="Filter jobs…"
+        class="border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white outline-none focus:border-blue-400 w-48" />
+    </div>
+    <div id="jobsList" class="space-y-4"></div>
+  </div>
+
+</main>
+
+<footer class="bg-white border-t mt-16 py-10">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+    <p>© 2025 Skilled Development Desk · Learn, build, grow.</p>
+    <div class="flex gap-4">
+      <a href="#" class="hover:text-gray-600">About</a>
+      <a href="#" class="hover:text-gray-600">Privacy</a>
+      <a href="#" class="hover:text-gray-600">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<div id="aiPanel" class="fixed top-0 right-[-420px] w-[420px] h-full bg-white border-l border-gray-200 shadow-2xl z-[100] flex flex-col" style="max-width:95vw">
+  <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-gradient-to-br from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
+        <i class="fa-solid fa-wand-magic-sparkles text-white text-xs"></i>
+      </div>
+      <span class="font-semibold text-sm">AI Assistant</span>
+      <span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-medium">Online</span>
+    </div>
+    <button onclick="toggleAIPanel()" class="text-gray-400 hover:text-gray-700 transition-colors">
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+  </div>
+
+  <div id="aiMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+    <div class="bubble-ai p-4 text-sm text-gray-700 max-w-[90%]">
+      👋 Hi! I'm your AI learning assistant. Ask me anything — career advice, code help, course recommendations, or skill guidance.
+    </div>
+  </div>
+
+  <div class="border-t border-gray-100 p-4">
+    <div class="flex gap-2">
+      <input id="aiInput" type="text" placeholder="Ask anything…"
+        class="flex-1 bg-gray-100 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-200"
+        onkeydown="if(event.key==='Enter') sendAIMessage()" />
+      <button onclick="sendAIMessage()"
+        class="w-10 h-10 bg-gradient-to-br from-violet-600 to-blue-600 rounded-xl flex items-center justify-center text-white hover:opacity-90 transition-opacity">
+        <i class="fa-solid fa-paper-plane text-xs"></i>
+      </button>
+    </div>
+    <div class="flex gap-2 mt-2 flex-wrap">
+      <button onclick="quickAI('Help me pick a course')" class="text-xs px-3 py-1.5 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors">📚 Pick a course</button>
+      <button onclick="quickAI('How do I learn React fast?')" class="text-xs px-3 py-1.5 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors">⚛️ Learn React</button>
+      <button onclick="quickAI('Career advice for junior devs')" class="text-xs px-3 py-1.5 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors">💼 Career advice</button>
+    </div>
+  </div>
+</div>
+
+<div id="aiOverlay" onclick="toggleAIPanel()" class="hidden fixed inset-0 bg-black/20 z-[99]"></div>
+
+<div id="askModal" class="hidden fixed inset-0 bg-black/40 z-[200] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+      <h2 id="modalTitle" class="font-semibold text-lg">Ask the Community</h2>
+      <button onclick="closeAskModal()" class="text-gray-400 hover:text-gray-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="p-6 space-y-4">
+      <div>
+        <label class="text-sm font-medium text-gray-700 mb-1 block">Title</label>
+        <input id="questionTitle" type="text" placeholder="What's your question?"
+          class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
+      </div>
+      <div>
+        <label class="text-sm font-medium text-gray-700 mb-1 block">Details</label>
+        <textarea id="questionBody" rows="4" placeholder="Provide more context…"
+          class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 resize-none"></textarea>
+      </div>
+      <div>
+        <label class="text-sm font-medium text-gray-700 mb-1 block">Tags</label>
+        <input id="questionTags" type="text" placeholder="e.g. React, Python, DevOps (comma-separated)"
+          class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
+      </div>
+    </div>
+    <div class="px-6 pb-5 flex gap-3">
+      <button onclick="submitQuestion()" class="flex-1 bg-blue-600 text-white font-semibold py-3 rounded-2xl hover:bg-blue-700 transition-colors text-sm">
+        Post Question
+      </button>
+      <button onclick="closeAskModal()" class="px-5 py-3 border border-gray-200 rounded-2xl text-sm font-medium hover:bg-gray-50 transition-colors">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-5 py-3 rounded-2xl text-sm font-medium shadow-xl z-[300] opacity-0 translate-y-4 pointer-events-none flex items-center gap-2">
+  <i id="toastIcon" class="fa-solid fa-check text-green-400"></i>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<script>
+/* ========================
+   DATA
+======================== */
+const DISCUSSIONS = [
+  { id:1, type:'question', author:'Farhan K.', avatar:'F', time:'2h ago', title:'How do I handle JWT refresh tokens securely in a React app?', body:'I have a standard login flow with access/refresh tokens but not sure where to store them or how to handle silent refresh…', tags:['React','Security','Auth'], votes:42, replies:8, saved:false },
+  { id:2, type:'tutorial', author:'Sara M.', avatar:'S', time:'5h ago', title:'Async/Await in JS: a beginner-friendly guide', body:'I wrote a walkthrough on converting callback hell to clean async code. Includes examples and common mistakes to avoid.', tags:['JavaScript','Async'], votes:98, replies:19, saved:false },
+  { id:3, type:'question', author:'Anonymous', avatar:'?', time:'6h ago', title:'Is learning Rust worth it in 2025?', body:'Coming from Python/Go background. Looking for honest opinions on whether Rust is practical for web backends or mostly systems.', tags:['Rust','Career'], votes:31, replies:14, saved:false },
+  { id:4, type:'tutorial', author:'Tamal H.', avatar:'T', time:'1d ago', title:'Docker Compose for a Node + Postgres stack — step by step', body:'Quick tutorial on setting up a development environment with hot reload, volume mounts, and health checks.', tags:['Docker','Node.js','DevOps'], votes:72, replies:5, saved:false },
+  { id:5, type:'question', author:'Nadia I.', avatar:'N', time:'1d ago', title:'Best free resources to learn system design?', body:'Preparing for senior-level interviews. Have read the basics but need something that covers distributed systems deeply.', tags:['System Design','Interview'], votes:55, replies:22, saved:false },
+  { id:6, type:'tutorial', author:'Rifat A.', avatar:'R', time:'2d ago', title:'Building a real-time chat with Socket.io + React', body:'Step-by-step guide to building a WhatsApp-style chat app with rooms, typing indicators, and read receipts.', tags:['React','Socket.io','Real-time'], votes:114, replies:30, saved:false },
+];
+
+const COURSES = [
+  { id:1, cat:'web', title:'Full-Stack Next.js 14', instructor:'Sara M.', students:3210, rating:4.9, duration:'22h', level:'Intermediate', emoji:'🚀', gradient:'from-blue-500 to-indigo-600' },
+  { id:2, cat:'data', title:'Machine Learning with Python', instructor:'Dr. Karim R.', students:5120, rating:4.8, duration:'35h', level:'Beginner', emoji:'🤖', gradient:'from-violet-500 to-purple-600' },
+  { id:3, cat:'web', title:'Advanced Python', instructor:'Tamal H.', students:1800, rating:4.7, duration:'18h', level:'Advanced', emoji:'🐍', gradient:'from-emerald-500 to-teal-600' },
+  { id:4, cat:'mobile', title:'Flutter for Beginners', instructor:'Nadia I.', students:2400, rating:4.6, duration:'20h', level:'Beginner', emoji:'📱', gradient:'from-cyan-500 to-sky-600' },
+  { id:5, cat:'devops', title:'Kubernetes in Production', instructor:'Rifat A.', students:980, rating:4.9, duration:'14h', level:'Advanced', emoji:'☸️', gradient:'from-orange-500 to-amber-600' },
+  { id:6, cat:'data', title:'SQL & Data Modeling', instructor:'Farhan K.', students:4100, rating:4.7, duration:'12h', level:'Beginner', emoji:'🗄️', gradient:'from-rose-500 to-pink-600' },
+];
+
+const SKILL_CHALLENGES = [
+  { id:1, title:'30-Day JavaScript Sprint', desc:'Complete 30 small JS challenges — one per day. Earn a JS Master badge.', difficulty:'Beginner', participants:1240, daysLeft:18, emoji:'⚡', color:'bg-yellow-50 border-yellow-200' },
+  { id:2, title:'React Component Library', desc:'Build a reusable component library with Storybook docs. Judged by the community.', difficulty:'Intermediate', participants:320, daysLeft:7, emoji:'⚛️', color:'bg-blue-50 border-blue-200' },
+  { id:3, title:'Blind SQL Challenge Pack', desc:'25 SQL puzzles with no hints. Leaderboard ranked by speed and correctness.', difficulty:'Advanced', participants:88, daysLeft:3, emoji:'🗄️', color:'bg-purple-50 border-purple-200' },
+  { id:4, title:'Open Source Contribution Month', desc:'Make 4 meaningful pull requests to open source repos. Links reviewed by mentors.', difficulty:'Intermediate', participants:510, daysLeft:24, emoji:'🌍', color:'bg-green-50 border-green-200' },
+];
+
+const JOBS = [
+  { id:1, title:'Frontend Engineer', company:'ByteStack', location:'Remote', type:'Full-time', salary:'$70–90k', tags:['React','TypeScript'], posted:'1d ago', logo:'B', color:'bg-blue-600' },
+  { id:2, title:'Python Backend Developer', company:'DataSync', location:'Dhaka, BD', type:'Full-time', salary:'$40–60k', tags:['Python','FastAPI','Postgres'], posted:'2d ago', logo:'D', color:'bg-emerald-600' },
+  { id:3, title:'DevOps Engineer', company:'CloudNova', location:'Remote', type:'Contract', salary:'$85–110k', tags:['Kubernetes','AWS','CI/CD'], posted:'3d ago', logo:'C', color:'bg-violet-600' },
+  { id:4, title:'Mobile Developer (Flutter)', company:'AppWave', location:'Hybrid', type:'Full-time', salary:'$50–70k', tags:['Flutter','Dart','Firebase'], posted:'4d ago', logo:'A', color:'bg-rose-600' },
+  { id:5, title:'ML Engineer', company:'NeuralBits', location:'Remote', type:'Full-time', salary:'$90–120k', tags:['Python','PyTorch','MLOps'], posted:'5d ago', logo:'N', color:'bg-orange-600' },
+];
+
+const SKILLS_TAGS = ['TypeScript','React','Python','System Design','Go','Rust','Docker','SQL','Next.js','AWS','Node.js','Flutter'];
+
+const LEADERBOARD = [
+  { name:'Sara M.', points:3420, badge:'🥇' },
+  { name:'Tamal H.', points:2890, badge:'🥈' },
+  { name:'Rifat A.', points:2510, badge:'🥉' },
+  { name:'Farhan K.', points:1980, badge:'🏅' },
+  { name:'Nadia I.', points:1650, badge:'🏅' },
+];
+
+const TAG_COLORS = ['bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-emerald-100 text-emerald-700','bg-rose-100 text-rose-700','bg-amber-100 text-amber-700','bg-pink-100 text-pink-700','bg-sky-100 text-sky-700','bg-orange-100 text-orange-700','bg-teal-100 text-teal-700'];
+
+let discussions = JSON.parse(JSON.stringify(DISCUSSIONS));
+let activeFilter = 'all';
+let modalType = 'public';
+let aiOpen = false;
+let aiHistory = [];
+
+const SEARCH_INDEX = [
+  ...DISCUSSIONS.map(d => ({ label: d.title, type:'Discussion', tab:'community' })),
+  ...COURSES.map(c => ({ label: c.title, type:'Course', tab:'schools' })),
+  ...JOBS.map(j => ({ label: j.title + ' @ ' + j.company, type:'Job', tab:'jobs' })),
+];
+
+/* ========================
+   RENDER FUNCTIONS
+======================== */
+function tagColorFor(tag) {
+  let h = 0; for (let c of tag) h = (h*31 + c.charCodeAt(0)) % TAG_COLORS.length;
+  return TAG_COLORS[h];
+}
+
+function renderDiscussions() {
+  const feed = document.getElementById('discussionFeed');
+  const list = activeFilter === 'all' ? discussions : discussions.filter(d => d.type === activeFilter);
+  if (!list.length) { feed.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center text-gray-400 border border-gray-100">No posts yet. Be the first to ask!</div>`; return; }
+  feed.innerHTML = list.map(d => `
+    <div class="bg-white rounded-2xl border border-gray-100 p-5 card transition-all">
+      <div class="flex items-start gap-3">
+                <div class="flex flex-col items-center gap-1 min-w-[36px]">
+          <button onclick="vote(${d.id},1)" class="text-gray-400 hover:text-blue-600 transition-colors ${d.myVote===1?'voted':''}">
+            <i class="fa-solid fa-caret-up text-xl"></i>
+          </button>
+          <span id="vote-${d.id}" class="text-sm font-semibold text-gray-700">${d.votes}</span>
+          <button onclick="vote(${d.id},-1)" class="text-gray-400 hover:text-red-500 transition-colors ${d.myVote===-1?'voted text-red-500':''}">
+            <i class="fa-solid fa-caret-down text-xl"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1 flex-wrap">
+            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-white text-xs font-bold ${d.author==='Anonymous'?'bg-gray-400':'bg-gradient-to-br from-blue-500 to-indigo-600'}">${d.avatar}</span>
+            <span class="text-sm font-medium text-gray-700">${d.author}</span>
+            <span class="text-xs text-gray-400">${d.time}</span>
+            <span class="ml-auto text-xs px-2.5 py-0.5 rounded-full font-medium ${d.type==='tutorial'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${d.type==='tutorial'?'Tutorial':'Question'}</span>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-1 leading-snug">${d.title}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed line-clamp-2">${d.body}</p>
+          <div class="mt-3 flex items-center gap-3 flex-wrap">
+            <div class="flex gap-1.5 flex-wrap">
+              ${d.tags.map(t=>`<span class="tag ${tagColorFor(t)}">${t}</span>`).join('')}
+            </div>
+            <div class="ml-auto flex items-center gap-3 text-xs text-gray-400">
+              <span><i class="fa-regular fa-comment mr-1"></i>${d.replies}</span>
+              <button onclick="toggleSave(${d.id})" class="hover:text-blue-600 transition-colors ${d.saved?'text-blue-600':''}">
+                <i class="fa-${d.saved?'solid':'regular'} fa-bookmark"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCourses() {
+  const cat = document.getElementById('courseFilter').value;
+  const list = cat === 'all' ? COURSES : COURSES.filter(c => c.cat === cat);
+  document.getElementById('coursesGrid').innerHTML = list.map(c => `
+    <div class="card bg-white rounded-3xl overflow-hidden border border-gray-100 cursor-pointer">
+      <div class="h-36 bg-gradient-to-br ${c.gradient} flex items-center justify-center text-5xl">${c.emoji}</div>
+      <div class="p-5">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">${c.level}</span>
+          <span class="text-xs text-amber-500 font-semibold"><i class="fa-solid fa-star mr-0.5"></i>${c.rating}</span>
+        </div>
+        <h3 class="font-semibold mt-2 text-gray-900">${c.title}</h3>
+        <p class="text-sm text-gray-400 mt-0.5">by ${c.instructor}</p>
+        <div class="mt-3 flex items-center justify-between text-xs text-gray-400">
+          <span><i class="fa-solid fa-user-group mr-1"></i>${c.students.toLocaleString()} enrolled</span>
+          <span><i class="fa-regular fa-clock mr-1"></i>${c.duration}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSkills() {
+  document.getElementById('skillsGrid').innerHTML = SKILL_CHALLENGES.map(s => `
+    <div class="card ${s.color} rounded-3xl border p-5 cursor-pointer relative overflow-hidden">
+      <div class="flex items-start justify-between">
+        <div class="text-4xl mb-3">${s.emoji}</div>
+        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-white/50 text-gray-700">${s.daysLeft} days left</span>
+      </div>
+      <h3 class="font-semibold text-gray-900">${s.title}</h3>
+      <p class="text-sm text-gray-600 mt-1 line-clamp-2">${s.desc}</p>
+      <div class="mt-4 flex items-center justify-between text-xs font-medium text-gray-500">
+        <span>${s.difficulty}</span>
+        <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i>${s.participants} joining</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderJobs() {
+  const q = document.getElementById('jobSearch').value.toLowerCase();
+  const list = JOBS.filter(j => j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q) || j.tags.join(' ').toLowerCase().includes(q));
+  document.getElementById('jobsList').innerHTML = list.map(j => `
+    <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-start gap-4 hover:border-blue-200 transition-colors cursor-pointer">
+      <div class="w-12 h-12 rounded-xl text-white font-bold text-xl flex items-center justify-center shrink-0 ${j.color}">${j.logo}</div>
+      <div class="flex-1">
+        <div class="flex items-center justify-between mb-1">
+          <h3 class="font-semibold text-gray-900">${j.title}</h3>
+          <span class="text-xs text-gray-400">${j.posted}</span>
+        </div>
+        <div class="text-sm text-gray-500 mb-2">${j.company} • ${j.location} • ${j.type}</div>
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex gap-2">
+            ${j.tags.map(t=>`<span class="tag bg-gray-100 text-gray-600">${t}</span>`).join('')}
+          </div>
+          <span class="text-sm font-semibold text-gray-700">${j.salary}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSidebar() {
+  document.getElementById('skillTags').innerHTML = SKILLS_TAGS.map(t => `<span class="tag ${tagColorFor(t)}">${t}</span>`).join('');
+  document.getElementById('leaderboard').innerHTML = LEADERBOARD.map((l, i) => `
+    <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer">
+      <div class="flex items-center gap-2">
+        <span class="w-5 text-center text-gray-400 font-medium text-sm">${i+1}</span>
+        <span class="font-medium text-sm text-gray-700">${l.name}</span>
+        <span class="text-lg">${l.badge}</span>
+      </div>
+      <span class="text-xs font-semibold text-blue-600">${l.points.toLocaleString()} pts</span>
+    </div>
+  `).join('');
+}
+
+/* ========================
+   INTERACTIONS & STATE
+======================== */
+function vote(id, val) {
+  const d = discussions.find(x => x.id === id);
+  if(!d) return;
+  if(d.myVote === val) { d.votes -= val; d.myVote = 0; }
+  else { d.votes += val - (d.myVote||0); d.myVote = val; }
+  renderDiscussions();
+}
+
+function toggleSave(id) {
+  const d = discussions.find(x => x.id === id);
+  if(d) {
+    d.saved = !d.saved;
+    renderDiscussions();
+    showToast(d.saved ? 'Saved to bookmarks' : 'Removed from bookmarks');
+  }
+}
+
+function filterDiscussions(type) {
+  activeFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.className = 'filter-btn px-3 py-1.5 rounded-xl font-medium text-xs transition-colors ' + (b.id === `filter-${type}` ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200');
+  });
+  renderDiscussions();
+}
+
+function loadMoreDiscussions() {
+  showToast('Loading more discussions...');
+}
+
+function switchTab(el) {
+  const tab = el.dataset.tab;
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active', 'text-blue-600'));
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if(l.dataset.tab === tab) {
+        l.classList.add('active', 'text-blue-600');
+        l.classList.remove('text-gray-500');
+    } else {
+        l.classList.add('text-gray-500');
+    }
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+function switchTabByName(name) {
+  const el = document.querySelector(`.nav-link[data-tab="${name}"]`);
+  if(el) switchTab(el);
+}
+
+function toggleAskDropdown() { document.getElementById('askDropdown').classList.toggle('hidden'); }
+function toggleProfileMenu() { document.getElementById('profileMenu').classList.toggle('hidden'); }
+
+document.addEventListener('click', e => {
+  if(!e.target.closest('#askBtn') && !e.target.closest('#askDropdown')) document.getElementById('askDropdown').classList.add('hidden');
+  if(!e.target.closest('.relative > div[onclick="toggleProfileMenu()"]') && !e.target.closest('#profileMenu')) document.getElementById('profileMenu').classList.add('hidden');
+});
+
+function openAskModal(type) {
+  modalType = type;
+  document.getElementById('modalTitle').innerText = type === 'public' ? 'Ask the Community' : 'Ask Anonymously';
+  document.getElementById('askModal').classList.remove('hidden');
+  document.getElementById('askDropdown').classList.add('hidden');
+}
+
+function closeAskModal() {
+  document.getElementById('askModal').classList.add('hidden');
+  document.getElementById('questionTitle').value = '';
+  document.getElementById('questionBody').value = '';
+  document.getElementById('questionTags').value = '';
+}
+
+function submitQuestion() {
+  const t = document.getElementById('questionTitle').value;
+  const b = document.getElementById('questionBody').value;
+  const tags = document.getElementById('questionTags').value.split(',').map(x=>x.trim()).filter(Boolean);
+  if(!t || !b) return showToast('Please fill in all fields', false);
+  discussions.unshift({
+    id: Date.now(), type: 'question', author: modalType === 'public' ? 'Ayaan Rahman' : 'Anonymous',
+    avatar: modalType === 'public' ? 'A' : '?', time: 'Just now', title: t, body: b, tags: tags.length ? tags : ['General'],
+    votes: 0, replies: 0, saved: false
+  });
+  renderDiscussions();
+  closeAskModal();
+  showToast('Question posted successfully!');
+}
+
+function showToast(msg, success = true) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').innerText = msg;
+  document.getElementById('toastIcon').className = success ? 'fa-solid fa-check text-green-400' : 'fa-solid fa-circle-exclamation text-red-400';
+  t.classList.remove('opacity-0', 'translate-y-4');
+  setTimeout(() => t.classList.add('opacity-0', 'translate-y-4'), 3000);
+}
+
+/* ========================
+   AI LOGIC
+======================== */
+function toggleAIPanel() {
+  aiOpen = !aiOpen;
+  document.getElementById('aiPanel').style.right = aiOpen ? '0' : '-420px';
+  document.getElementById('aiOverlay').classList.toggle('hidden', !aiOpen);
+}
+
+function sendAIMessage(txt) {
+  const val = txt || document.getElementById('aiInput').value.trim();
+  if(!val) return;
+  document.getElementById('aiInput').value = '';
+  const box = document.getElementById('aiMessages');
+  box.innerHTML += `<div class="flex justify-end"><div class="bubble-user p-3 text-sm max-w-[90%] shadow-sm">${val}</div></div>`;
+  setTimeout(() => box.scrollTop = box.scrollHeight, 10);
+ 
+  const typingId = 'typing-' + Date.now();
+  box.innerHTML += `<div id="${typingId}" class="bubble-ai p-4 text-sm max-w-[90%] typing shadow-sm"><span></span><span></span><span></span></div>`;
+  setTimeout(() => box.scrollTop = box.scrollHeight, 10);
+
+  setTimeout(() => {
+    document.getElementById(typingId).remove();
+    box.innerHTML += `<div class="bubble-ai p-4 text-sm text-gray-700 max-w-[90%] shadow-sm">I can definitely help with that! However, since this is a UI demo, I'm just a placeholder response. In a real app, I'd provide personalized guidance for "${val}".</div>`;
+    setTimeout(() => box.scrollTop = box.scrollHeight, 10);
+  }, 1500);
+}
+
+function quickAI(q) {
+  if(!aiOpen) toggleAIPanel();
+  setTimeout(() => sendAIMessage(q), 300);
+}
+
+/* ========================
+   SEARCH LOGIC
+======================== */
+document.getElementById('searchInput').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase();
+  const dd = document.getElementById('searchDropdown');
+  if(!q) return dd.classList.add('hidden');
+  const res = SEARCH_INDEX.filter(x => x.label.toLowerCase().includes(q)).slice(0,5);
+  if(res.length) {
+    dd.innerHTML = res.map(r => `<div onclick="document.getElementById('searchInput').value=''; document.getElementById('searchDropdown').classList.add('hidden'); switchTabByName('${r.tab}')" class="px-4 py-2 hover:bg-gray-50 cursor-pointer flex justify-between items-center"><span class="truncate pr-4">${r.label}</span><span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-md">${r.type}</span></div>`).join('');
+    dd.classList.remove('hidden');
+  } else {
+    dd.innerHTML = `<div class="px-4 py-3 text-gray-400 text-center">No results found</div>`;
+    dd.classList.remove('hidden');
+  }
+});
+
+document.addEventListener('click', e => {
+    if(!e.target.closest('#searchInput')) {
+        document.getElementById('searchDropdown').classList.add('hidden');
+    }
+});
+
+/* ========================
+   INIT
+======================== */
+renderDiscussions();
+renderCourses();
+renderSkills();
+renderJobs();
+renderSidebar();
+</script>
+</body>
+</html>
