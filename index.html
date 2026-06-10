@@ -56,30 +56,39 @@
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen">
 
+<!-- ============================================================
+     HEADER
+============================================================ -->
 <header class="glass border-b border-gray-200 sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
 
-        <a href="#" class="flex items-center gap-2 shrink-0">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2 shrink-0">
       <div class="w-9 h-9 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow">S</div>
       <span class="text-xl font-extrabold tracking-tight hidden sm:block">Skilled<span class="text-blue-600">Desk</span></span>
     </a>
 
-        <div class="flex-1 relative max-w-xl">
+    <!-- Search -->
+    <div class="flex-1 relative max-w-xl">
       <input id="searchInput" type="text"
         class="w-full bg-gray-100 border border-transparent focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 rounded-2xl py-2.5 pl-10 pr-4 text-sm outline-none transition-all"
         placeholder="Search skills, courses, discussions…" />
       <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-            <div id="searchDropdown" class="hidden absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 text-sm"></div>
+      <!-- Search suggestions dropdown -->
+      <div id="searchDropdown" class="hidden absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 text-sm"></div>
     </div>
 
-        <div class="flex items-center gap-2 ml-auto shrink-0">
-            <button onclick="toggleAIPanel()"
+    <!-- Actions -->
+    <div class="flex items-center gap-2 ml-auto shrink-0">
+      <!-- AI button -->
+      <button onclick="toggleAIPanel()"
         class="flex items-center gap-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2.5 rounded-2xl text-sm font-semibold hover:scale-105 transition-all shadow-md">
         <i class="fa-solid fa-wand-magic-sparkles"></i>
         <span class="hidden sm:inline">AI Assistant</span>
       </button>
 
-            <div class="relative">
+      <!-- Ask dropdown -->
+      <div class="relative">
         <button id="askBtn" onclick="toggleAskDropdown()"
           class="flex items-center gap-1.5 border border-gray-300 hover:border-gray-400 bg-white px-4 py-2.5 rounded-2xl text-sm font-medium transition-all">
           <i class="fa-solid fa-plus"></i>
@@ -103,7 +112,8 @@
         </div>
       </div>
 
-            <div class="relative">
+      <!-- Profile -->
+      <div class="relative">
         <div onclick="toggleProfileMenu()"
           class="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold cursor-pointer hover:ring-4 hover:ring-blue-100 transition-all select-none">
           A
@@ -123,7 +133,8 @@
     </div>
   </div>
 
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 border-t border-gray-100">
+  <!-- Nav Tabs -->
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 border-t border-gray-100">
     <ul class="flex items-center gap-6 text-sm font-medium">
       <li data-tab="community" onclick="switchTab(this)" class="nav-link active text-blue-600 py-4">Community</li>
       <li data-tab="schools"   onclick="switchTab(this)" class="nav-link text-gray-500 hover:text-gray-800 py-4">Schools</li>
@@ -133,16 +144,22 @@
   </nav>
 </header>
 
+<!-- ============================================================
+     MAIN
+============================================================ -->
 <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
-    <div class="mb-8">
+  <!-- Welcome -->
+  <div class="mb-8">
     <h1 class="text-3xl font-extrabold tracking-tight">Welcome back, Ayaan 👋</h1>
     <p class="text-gray-500 mt-1">Connect, learn, and grow with fellow developers.</p>
   </div>
 
-    <div id="tab-community" class="tab-panel active">
+  <!-- ===== COMMUNITY TAB ===== -->
+  <div id="tab-community" class="tab-panel active">
 
-        <section class="mb-10">
+    <!-- Featured -->
+    <section class="mb-10">
       <div class="flex justify-between items-center mb-5">
         <h2 class="text-xl font-semibold">Featured</h2>
         <button class="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">View all <i class="fa-solid fa-arrow-right text-xs"></i></button>
@@ -187,9 +204,11 @@
       </div>
     </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Two columns -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <div class="lg:col-span-2 space-y-5">
+      <!-- Discussions Feed -->
+      <div class="lg:col-span-2 space-y-5">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold flex items-center gap-2"><i class="fa-solid fa-comments text-blue-500"></i> Recent Discussions</h2>
           <div class="flex gap-2 text-sm">
@@ -206,19 +225,23 @@
         </button>
       </div>
 
-            <div class="space-y-6">
+      <!-- Sidebar -->
+      <div class="space-y-6">
 
-                <div class="bg-white rounded-3xl border border-gray-100 p-5">
+        <!-- Popular skills -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-5">
           <h3 class="font-semibold mb-4 text-sm">Popular Skills</h3>
           <div id="skillTags" class="flex flex-wrap gap-2"></div>
         </div>
 
-                <div class="bg-white rounded-3xl border border-gray-100 p-5">
+        <!-- Leaderboard -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-5">
           <h3 class="font-semibold mb-4 text-sm">Top Contributors</h3>
           <div id="leaderboard" class="space-y-3"></div>
         </div>
 
-                <div class="bg-white rounded-3xl border border-gray-100 p-5">
+        <!-- Quick Start -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-5">
           <h3 class="font-semibold mb-3 text-sm">Quick Start</h3>
           <div class="space-y-1 text-sm">
             <button onclick="switchTabByName('schools')" class="flex items-center gap-3 w-full p-2.5 hover:bg-gray-50 rounded-xl transition-colors text-left">
@@ -237,7 +260,8 @@
     </div>
   </div>
 
-    <div id="tab-schools" class="tab-panel">
+  <!-- ===== SCHOOLS TAB ===== -->
+  <div id="tab-schools" class="tab-panel">
     <div class="mb-6 flex items-center justify-between">
       <h2 class="text-xl font-semibold">Browse Courses</h2>
       <div class="flex gap-2">
@@ -253,12 +277,14 @@
     <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
   </div>
 
-    <div id="tab-skills" class="tab-panel">
+  <!-- ===== SKILLS TAB ===== -->
+  <div id="tab-skills" class="tab-panel">
     <h2 class="text-xl font-semibold mb-6">Skill Challenges</h2>
     <div id="skillsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
   </div>
 
-    <div id="tab-jobs" class="tab-panel">
+  <!-- ===== JOBS TAB ===== -->
+  <div id="tab-jobs" class="tab-panel">
     <div class="mb-6 flex items-center justify-between">
       <h2 class="text-xl font-semibold">Job Board</h2>
       <input id="jobSearch" oninput="renderJobs()" type="text" placeholder="Filter jobs…"
@@ -269,6 +295,7 @@
 
 </main>
 
+<!-- Footer -->
 <footer class="bg-white border-t mt-16 py-10">
   <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400">
     <p>© 2025 Skilled Development Desk · Learn, build, grow.</p>
@@ -280,6 +307,9 @@
   </div>
 </footer>
 
+<!-- ============================================================
+     AI PANEL (slide-in)
+============================================================ -->
 <div id="aiPanel" class="fixed top-0 right-[-420px] w-[420px] h-full bg-white border-l border-gray-200 shadow-2xl z-[100] flex flex-col" style="max-width:95vw">
   <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
     <div class="flex items-center gap-2">
@@ -318,8 +348,12 @@
   </div>
 </div>
 
+<!-- AI overlay -->
 <div id="aiOverlay" onclick="toggleAIPanel()" class="hidden fixed inset-0 bg-black/20 z-[99]"></div>
 
+<!-- ============================================================
+     ASK MODAL
+============================================================ -->
 <div id="askModal" class="hidden fixed inset-0 bg-black/40 z-[200] flex items-center justify-center p-4">
   <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl">
     <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
@@ -354,11 +388,17 @@
   </div>
 </div>
 
+<!-- ============================================================
+     TOAST
+============================================================ -->
 <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-5 py-3 rounded-2xl text-sm font-medium shadow-xl z-[300] opacity-0 translate-y-4 pointer-events-none flex items-center gap-2">
   <i id="toastIcon" class="fa-solid fa-check text-green-400"></i>
   <span id="toastMsg">Done!</span>
 </div>
 
+<!-- ============================================================
+     SCRIPTS
+============================================================ -->
 <script>
 /* ========================
    DATA
@@ -435,7 +475,8 @@ function renderDiscussions() {
   feed.innerHTML = list.map(d => `
     <div class="bg-white rounded-2xl border border-gray-100 p-5 card transition-all">
       <div class="flex items-start gap-3">
-                <div class="flex flex-col items-center gap-1 min-w-[36px]">
+        <!-- Vote -->
+        <div class="flex flex-col items-center gap-1 min-w-[36px]">
           <button onclick="vote(${d.id},1)" class="text-gray-400 hover:text-blue-600 transition-colors ${d.myVote===1?'voted':''}">
             <i class="fa-solid fa-caret-up text-xl"></i>
           </button>
@@ -488,130 +529,160 @@ function renderCourses() {
           <span><i class="fa-solid fa-user-group mr-1"></i>${c.students.toLocaleString()} enrolled</span>
           <span><i class="fa-regular fa-clock mr-1"></i>${c.duration}</span>
         </div>
+        <button onclick="showToast('Enrolled in ${c.title}!','check')" class="mt-4 w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors">
+          Enroll Free
+        </button>
       </div>
     </div>
   `).join('');
 }
 
-function renderSkills() {
+function renderSkillChallenges() {
   document.getElementById('skillsGrid').innerHTML = SKILL_CHALLENGES.map(s => `
-    <div class="card ${s.color} rounded-3xl border p-5 cursor-pointer relative overflow-hidden">
-      <div class="flex items-start justify-between">
-        <div class="text-4xl mb-3">${s.emoji}</div>
-        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-white/50 text-gray-700">${s.daysLeft} days left</span>
-      </div>
-      <h3 class="font-semibold text-gray-900">${s.title}</h3>
-      <p class="text-sm text-gray-600 mt-1 line-clamp-2">${s.desc}</p>
-      <div class="mt-4 flex items-center justify-between text-xs font-medium text-gray-500">
-        <span>${s.difficulty}</span>
-        <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i>${s.participants} joining</span>
+    <div class="card bg-white rounded-3xl border ${s.color} p-6">
+      <div class="flex items-start gap-4">
+        <div class="text-4xl">${s.emoji}</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs px-2.5 py-0.5 rounded-full font-medium ${s.difficulty==='Beginner'?'bg-green-100 text-green-700':s.difficulty==='Advanced'?'bg-red-100 text-red-700':'bg-blue-100 text-blue-700'}">${s.difficulty}</span>
+            <span class="text-xs text-orange-500 font-medium ml-auto"><i class="fa-regular fa-clock mr-1"></i>${s.daysLeft} days left</span>
+          </div>
+          <h3 class="font-semibold text-gray-900">${s.title}</h3>
+          <p class="text-sm text-gray-500 mt-1">${s.desc}</p>
+          <div class="mt-4 flex items-center justify-between">
+            <span class="text-xs text-gray-400"><i class="fa-solid fa-fire mr-1 text-orange-400"></i>${s.participants.toLocaleString()} participating</span>
+            <button onclick="showToast('Joined: ${s.title}!','trophy')" class="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-semibold hover:bg-gray-700 transition-colors">
+              Join Challenge
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   `).join('');
 }
 
 function renderJobs() {
-  const q = document.getElementById('jobSearch').value.toLowerCase();
-  const list = JOBS.filter(j => j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q) || j.tags.join(' ').toLowerCase().includes(q));
+  const q = (document.getElementById('jobSearch').value || '').toLowerCase();
+  const list = JOBS.filter(j => !q || j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q) || j.tags.some(t=>t.toLowerCase().includes(q)));
   document.getElementById('jobsList').innerHTML = list.map(j => `
-    <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-start gap-4 hover:border-blue-200 transition-colors cursor-pointer">
-      <div class="w-12 h-12 rounded-xl text-white font-bold text-xl flex items-center justify-center shrink-0 ${j.color}">${j.logo}</div>
-      <div class="flex-1">
-        <div class="flex items-center justify-between mb-1">
-          <h3 class="font-semibold text-gray-900">${j.title}</h3>
-          <span class="text-xs text-gray-400">${j.posted}</span>
-        </div>
-        <div class="text-sm text-gray-500 mb-2">${j.company} • ${j.location} • ${j.type}</div>
-        <div class="flex items-center justify-between flex-wrap gap-2">
-          <div class="flex gap-2">
-            ${j.tags.map(t=>`<span class="tag bg-gray-100 text-gray-600">${t}</span>`).join('')}
+    <div class="card bg-white rounded-2xl border border-gray-100 p-5 flex gap-4 items-start">
+      <div class="w-12 h-12 ${j.color} rounded-2xl flex items-center justify-center text-white font-bold text-lg shrink-0">${j.logo}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between flex-wrap gap-2">
+          <div>
+            <h3 class="font-semibold text-gray-900">${j.title}</h3>
+            <p class="text-sm text-gray-500">${j.company} · ${j.location}</p>
           </div>
-          <span class="text-sm font-semibold text-gray-700">${j.salary}</span>
+          <span class="text-sm font-semibold text-green-600">${j.salary}</span>
         </div>
+        <div class="mt-2 flex flex-wrap items-center gap-2">
+          ${j.tags.map(t=>`<span class="tag ${tagColorFor(t)}">${t}</span>`).join('')}
+          <span class="ml-auto text-xs text-gray-400">${j.posted}</span>
+          <span class="text-xs px-2.5 py-0.5 rounded-full border border-gray-200 text-gray-500">${j.type}</span>
+        </div>
+        <button onclick="showToast('Applied to ${j.title} at ${j.company}!','check')" class="mt-3 px-5 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors">
+          Quick Apply
+        </button>
       </div>
     </div>
-  `).join('');
+  `).join('') || '<div class="text-center text-gray-400 py-12">No jobs match your search.</div>';
 }
 
-function renderSidebar() {
-  document.getElementById('skillTags').innerHTML = SKILLS_TAGS.map(t => `<span class="tag ${tagColorFor(t)}">${t}</span>`).join('');
-  document.getElementById('leaderboard').innerHTML = LEADERBOARD.map((l, i) => `
-    <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer">
-      <div class="flex items-center gap-2">
-        <span class="w-5 text-center text-gray-400 font-medium text-sm">${i+1}</span>
-        <span class="font-medium text-sm text-gray-700">${l.name}</span>
-        <span class="text-lg">${l.badge}</span>
+function renderSkillTags() {
+  document.getElementById('skillTags').innerHTML = SKILLS_TAGS.map(t =>
+    `<span onclick="filterBySkillTag('${t}')" class="tag ${tagColorFor(t)} hover:opacity-80">#${t}</span>`
+  ).join('');
+}
+
+function renderLeaderboard() {
+  document.getElementById('leaderboard').innerHTML = LEADERBOARD.map((u, i) => `
+    <div class="flex items-center gap-3">
+      <span class="text-lg">${u.badge}</span>
+      <div class="flex-1">
+        <div class="text-sm font-medium">${u.name}</div>
+        <div class="h-1.5 bg-gray-100 rounded-full mt-1">
+          <div class="h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style="width:${Math.round(u.points/34.2)}%"></div>
+        </div>
       </div>
-      <span class="text-xs font-semibold text-blue-600">${l.points.toLocaleString()} pts</span>
+      <span class="text-xs text-gray-400 font-medium">${u.points.toLocaleString()}</span>
     </div>
   `).join('');
 }
 
 /* ========================
-   INTERACTIONS & STATE
+   INTERACTIONS
 ======================== */
-function vote(id, val) {
+function switchTab(el) {
+  document.querySelectorAll('.nav-link').forEach(t => { t.classList.remove('active','text-blue-600'); t.classList.add('text-gray-500'); });
+  el.classList.add('active','text-blue-600'); el.classList.remove('text-gray-500');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + el.dataset.tab).classList.add('active');
+}
+
+function switchTabByName(name) {
+  const el = document.querySelector(`[data-tab="${name}"]`);
+  if (el) switchTab(el);
+}
+
+function filterDiscussions(type) {
+  activeFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('bg-blue-600','text-white'); b.classList.add('bg-gray-100','text-gray-600'); });
+  document.getElementById('filter-'+type).classList.add('bg-blue-600','text-white');
+  document.getElementById('filter-'+type).classList.remove('bg-gray-100','text-gray-600');
+  renderDiscussions();
+}
+
+function filterBySkillTag(tag) {
+  switchTabByName('community');
+  // Highlight discussions with that tag
+  const list = DISCUSSIONS.filter(d => d.tags.includes(tag));
+  discussions = list.length ? list : DISCUSSIONS;
+  activeFilter = 'all';
+  renderDiscussions();
+  showToast(`Showing posts tagged #${tag}`, 'tag');
+  setTimeout(() => { discussions = JSON.parse(JSON.stringify(DISCUSSIONS)); }, 4000);
+}
+
+function vote(id, dir) {
   const d = discussions.find(x => x.id === id);
-  if(!d) return;
-  if(d.myVote === val) { d.votes -= val; d.myVote = 0; }
-  else { d.votes += val - (d.myVote||0); d.myVote = val; }
+  if (!d) return;
+  if (d.myVote === dir) { d.votes -= dir; d.myVote = 0; }
+  else { if (d.myVote) d.votes -= d.myVote; d.votes += dir; d.myVote = dir; }
+  document.getElementById('vote-'+id).textContent = d.votes;
   renderDiscussions();
 }
 
 function toggleSave(id) {
   const d = discussions.find(x => x.id === id);
-  if(d) {
-    d.saved = !d.saved;
-    renderDiscussions();
-    showToast(d.saved ? 'Saved to bookmarks' : 'Removed from bookmarks');
-  }
-}
-
-function filterDiscussions(type) {
-  activeFilter = type;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.className = 'filter-btn px-3 py-1.5 rounded-xl font-medium text-xs transition-colors ' + (b.id === `filter-${type}` ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200');
-  });
+  if (!d) return;
+  d.saved = !d.saved;
+  showToast(d.saved ? 'Saved to bookmarks' : 'Removed from bookmarks', d.saved ? 'bookmark' : 'trash');
   renderDiscussions();
 }
 
 function loadMoreDiscussions() {
-  showToast('Loading more discussions...');
+  const extra = [
+    { id: discussions.length+1, type:'question', author:'Imran S.', avatar:'I', time:'3d ago', title:'Differences between useMemo and useCallback in React?', body:'I keep mixing these two up. When should I actually reach for each one?', tags:['React','Performance'], votes:27, replies:9, saved:false },
+    { id: discussions.length+2, type:'tutorial', author:'Lina P.', avatar:'L', time:'4d ago', title:'Setting up ESLint + Prettier in VS Code (2025)', body:'Zero-config setup that works for Next.js, Tailwind, and TypeScript out of the box.', tags:['Tooling','TypeScript'], votes:61, replies:4, saved:false },
+  ];
+  discussions.push(...extra);
+  renderDiscussions();
+  showToast('2 more posts loaded', 'arrow-down');
 }
 
-function switchTab(el) {
-  const tab = el.dataset.tab;
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active', 'text-blue-600'));
-  document.querySelectorAll('.nav-link').forEach(l => {
-    if(l.dataset.tab === tab) {
-        l.classList.add('active', 'text-blue-600');
-        l.classList.remove('text-gray-500');
-    } else {
-        l.classList.add('text-gray-500');
-    }
-  });
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(`tab-${tab}`).classList.add('active');
+/* ========================
+   ASK MODAL
+======================== */
+function toggleAskDropdown() {
+  document.getElementById('askDropdown').classList.toggle('hidden');
 }
-
-function switchTabByName(name) {
-  const el = document.querySelector(`.nav-link[data-tab="${name}"]`);
-  if(el) switchTab(el);
-}
-
-function toggleAskDropdown() { document.getElementById('askDropdown').classList.toggle('hidden'); }
-function toggleProfileMenu() { document.getElementById('profileMenu').classList.toggle('hidden'); }
-
-document.addEventListener('click', e => {
-  if(!e.target.closest('#askBtn') && !e.target.closest('#askDropdown')) document.getElementById('askDropdown').classList.add('hidden');
-  if(!e.target.closest('.relative > div[onclick="toggleProfileMenu()"]') && !e.target.closest('#profileMenu')) document.getElementById('profileMenu').classList.add('hidden');
-});
 
 function openAskModal(type) {
   modalType = type;
-  document.getElementById('modalTitle').innerText = type === 'public' ? 'Ask the Community' : 'Ask Anonymously';
+  document.getElementById('modalTitle').textContent = type === 'anonymous' ? 'Ask Anonymously' : 'Ask the Community';
   document.getElementById('askModal').classList.remove('hidden');
   document.getElementById('askDropdown').classList.add('hidden');
+  setTimeout(() => document.getElementById('questionTitle').focus(), 50);
 }
 
 function closeAskModal() {
@@ -622,82 +693,185 @@ function closeAskModal() {
 }
 
 function submitQuestion() {
-  const t = document.getElementById('questionTitle').value;
-  const b = document.getElementById('questionBody').value;
-  const tags = document.getElementById('questionTags').value.split(',').map(x=>x.trim()).filter(Boolean);
-  if(!t || !b) return showToast('Please fill in all fields', false);
-  discussions.unshift({
-    id: Date.now(), type: 'question', author: modalType === 'public' ? 'Ayaan Rahman' : 'Anonymous',
-    avatar: modalType === 'public' ? 'A' : '?', time: 'Just now', title: t, body: b, tags: tags.length ? tags : ['General'],
-    votes: 0, replies: 0, saved: false
-  });
+  const title = document.getElementById('questionTitle').value.trim();
+  const body = document.getElementById('questionBody').value.trim();
+  const rawTags = document.getElementById('questionTags').value;
+  if (!title) { document.getElementById('questionTitle').focus(); return; }
+  const tags = rawTags.split(',').map(t=>t.trim()).filter(Boolean).slice(0,4);
+  const newPost = {
+    id: discussions.length + 1,
+    type: 'question',
+    author: modalType === 'anonymous' ? 'Anonymous' : 'Ayaan Rahman',
+    avatar: modalType === 'anonymous' ? '?' : 'A',
+    time: 'Just now',
+    title, body: body || '(No details provided)',
+    tags: tags.length ? tags : ['General'],
+    votes: 0, replies: 0, saved: false, myVote: 0,
+  };
+  discussions.unshift(newPost);
   renderDiscussions();
   closeAskModal();
-  showToast('Question posted successfully!');
-}
-
-function showToast(msg, success = true) {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').innerText = msg;
-  document.getElementById('toastIcon').className = success ? 'fa-solid fa-check text-green-400' : 'fa-solid fa-circle-exclamation text-red-400';
-  t.classList.remove('opacity-0', 'translate-y-4');
-  setTimeout(() => t.classList.add('opacity-0', 'translate-y-4'), 3000);
+  switchTabByName('community');
+  showToast('Question posted!', 'check');
 }
 
 /* ========================
-   AI LOGIC
+   PROFILE MENU
+======================== */
+function toggleProfileMenu() {
+  document.getElementById('profileMenu').classList.toggle('hidden');
+}
+
+/* ========================
+   AI PANEL
 ======================== */
 function toggleAIPanel() {
   aiOpen = !aiOpen;
-  document.getElementById('aiPanel').style.right = aiOpen ? '0' : '-420px';
-  document.getElementById('aiOverlay').classList.toggle('hidden', !aiOpen);
+  const panel = document.getElementById('aiPanel');
+  const overlay = document.getElementById('aiOverlay');
+  panel.style.right = aiOpen ? '0' : '-420px';
+  overlay.classList.toggle('hidden', !aiOpen);
+  if (aiOpen) setTimeout(() => document.getElementById('aiInput').focus(), 400);
 }
 
-function sendAIMessage(txt) {
-  const val = txt || document.getElementById('aiInput').value.trim();
-  if(!val) return;
-  document.getElementById('aiInput').value = '';
-  const box = document.getElementById('aiMessages');
-  box.innerHTML += `<div class="flex justify-end"><div class="bubble-user p-3 text-sm max-w-[90%] shadow-sm">${val}</div></div>`;
-  setTimeout(() => box.scrollTop = box.scrollHeight, 10);
- 
-  const typingId = 'typing-' + Date.now();
-  box.innerHTML += `<div id="${typingId}" class="bubble-ai p-4 text-sm max-w-[90%] typing shadow-sm"><span></span><span></span><span></span></div>`;
-  setTimeout(() => box.scrollTop = box.scrollHeight, 10);
-
-  setTimeout(() => {
-    document.getElementById(typingId).remove();
-    box.innerHTML += `<div class="bubble-ai p-4 text-sm text-gray-700 max-w-[90%] shadow-sm">I can definitely help with that! However, since this is a UI demo, I'm just a placeholder response. In a real app, I'd provide personalized guidance for "${val}".</div>`;
-    setTimeout(() => box.scrollTop = box.scrollHeight, 10);
-  }, 1500);
+function quickAI(msg) {
+  document.getElementById('aiInput').value = msg;
+  sendAIMessage();
 }
 
-function quickAI(q) {
-  if(!aiOpen) toggleAIPanel();
-  setTimeout(() => sendAIMessage(q), 300);
+async function sendAIMessage() {
+  const input = document.getElementById('aiInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  appendAIMessage('user', msg);
+  aiHistory.push({ role:'user', content: msg });
+
+  const typingId = appendTyping();
+
+  try {
+    const systemPrompt = `You are a helpful AI assistant on Skilled Development Desk, a learning platform for developers. You help with:
+- Course and skill recommendations
+- Career advice for developers
+- Code explanations and debugging
+- Learning paths and resources
+Keep responses concise, friendly, and practical. Format with clear paragraphs. If listing things, use 1. 2. 3. numbering.`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: aiHistory,
+      })
+    });
+
+    const data = await res.json();
+    removeTyping(typingId);
+
+    const reply = data.content?.map(b => b.type==='text'?b.text:'').join('\n').trim() || "Sorry, I couldn't get a response. Please try again.";
+    appendAIMessage('ai', reply);
+    aiHistory.push({ role:'assistant', content: reply });
+  } catch(e) {
+    removeTyping(typingId);
+    appendAIMessage('ai', "I'm having trouble connecting. Please check your network and try again.");
+  }
+}
+
+function appendAIMessage(role, text) {
+  const container = document.getElementById('aiMessages');
+  const div = document.createElement('div');
+  div.className = role==='user' ? 'flex justify-end' : '';
+  const bubble = document.createElement('div');
+  bubble.className = role==='user' ? 'bubble-user px-4 py-3 text-sm max-w-[85%]' : 'bubble-ai px-4 py-3 text-sm text-gray-700 max-w-[90%]';
+  // Simple formatting: newlines → <br>, **bold** support
+  bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.appendChild(bubble);
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendTyping() {
+  const container = document.getElementById('aiMessages');
+  const id = 'typing-' + Date.now();
+  const div = document.createElement('div');
+  div.id = id;
+  div.innerHTML = `<div class="bubble-ai px-4 py-3 inline-block"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return id;
+}
+
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
 }
 
 /* ========================
-   SEARCH LOGIC
+   SEARCH
 ======================== */
-document.getElementById('searchInput').addEventListener('input', e => {
-  const q = e.target.value.toLowerCase();
-  const dd = document.getElementById('searchDropdown');
-  if(!q) return dd.classList.add('hidden');
-  const res = SEARCH_INDEX.filter(x => x.label.toLowerCase().includes(q)).slice(0,5);
-  if(res.length) {
-    dd.innerHTML = res.map(r => `<div onclick="document.getElementById('searchInput').value=''; document.getElementById('searchDropdown').classList.add('hidden'); switchTabByName('${r.tab}')" class="px-4 py-2 hover:bg-gray-50 cursor-pointer flex justify-between items-center"><span class="truncate pr-4">${r.label}</span><span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-md">${r.type}</span></div>`).join('');
-    dd.classList.remove('hidden');
-  } else {
-    dd.innerHTML = `<div class="px-4 py-3 text-gray-400 text-center">No results found</div>`;
-    dd.classList.remove('hidden');
-  }
+const searchInput = document.getElementById('searchInput');
+const searchDropdown = document.getElementById('searchDropdown');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q) { searchDropdown.classList.add('hidden'); return; }
+  const results = SEARCH_INDEX.filter(i => i.label.toLowerCase().includes(q)).slice(0, 6);
+  if (!results.length) { searchDropdown.classList.add('hidden'); return; }
+  searchDropdown.innerHTML = results.map(r => `
+    <button onclick="selectSearch('${r.tab}','${r.label.replace(/'/g,"\\'")}','${r.type}')" class="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-gray-50 text-left">
+      <i class="fa-solid ${r.type==='Discussion'?'fa-comments':r.type==='Course'?'fa-book':'fa-briefcase'} text-gray-400 text-xs w-4"></i>
+      <div>
+        <div class="text-sm font-medium">${r.label}</div>
+        <div class="text-xs text-gray-400">${r.type}</div>
+      </div>
+    </button>
+  `).join('');
+  searchDropdown.classList.remove('hidden');
 });
 
+function selectSearch(tab, label, type) {
+  switchTabByName(tab);
+  searchInput.value = label;
+  searchDropdown.classList.add('hidden');
+  showToast(`Viewing: ${label}`, 'arrow-right');
+}
+
+/* ========================
+   TOAST
+======================== */
+let toastTimer;
+function showToast(msg, icon='check') {
+  const toast = document.getElementById('toast');
+  const iconMap = { check:'fa-check', bookmark:'fa-bookmark', trash:'fa-trash', trophy:'fa-trophy', tag:'fa-tag', 'arrow-down':'fa-arrow-down', 'arrow-right':'fa-arrow-right' };
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastIcon').className = `fa-solid ${iconMap[icon]||'fa-check'} text-green-400`;
+  toast.classList.remove('opacity-0','translate-y-4','pointer-events-none');
+  toast.classList.add('opacity-100','translate-y-0');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.add('opacity-0','translate-y-4');
+    setTimeout(() => toast.classList.add('pointer-events-none'), 300);
+  }, 2800);
+}
+
+/* ========================
+   CLOSE ON OUTSIDE CLICK
+======================== */
 document.addEventListener('click', e => {
-    if(!e.target.closest('#searchInput')) {
-        document.getElementById('searchDropdown').classList.add('hidden');
-    }
+  if (!e.target.closest('#askBtn') && !e.target.closest('#askDropdown'))
+    document.getElementById('askDropdown')?.classList.add('hidden');
+  if (!e.target.closest('.relative') && !e.target.closest('#profileMenu'))
+    document.getElementById('profileMenu')?.classList.add('hidden');
+  if (!e.target.closest('#searchInput') && !e.target.closest('#searchDropdown'))
+    document.getElementById('searchDropdown')?.classList.add('hidden');
+});
+
+document.getElementById('askModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('askModal')) closeAskModal();
 });
 
 /* ========================
@@ -705,9 +879,10 @@ document.addEventListener('click', e => {
 ======================== */
 renderDiscussions();
 renderCourses();
-renderSkills();
+renderSkillChallenges();
 renderJobs();
-renderSidebar();
+renderSkillTags();
+renderLeaderboard();
 </script>
 </body>
 </html>
